@@ -2,6 +2,14 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jourlity.App", "Jourlity.App\Jourlity.App.csproj", "{265FD9AB-7BC0-4EA8-8831-24911599D92C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jourlity.Data", "Jourlity.Data\Jourlity.Data.csproj", "{1C1E881C-02AB-463B-8152-24DAB69BD8B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jourlity.DbMigrations", "Jourlity.DbMigrations\Jourlity.DbMigrations.csproj", "{2AB094C3-A16A-4C7B-BAB0-B6CC08C0A2DC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jourlity.Api", "Jourlity.Api\Jourlity.Api.csproj", "{7D16028E-54A5-4A5B-9991-CDAD457E07C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jourlity.Dto", "Jourlity.Dto\Jourlity.Dto.csproj", "{AA0645DB-6DFB-45A4-BD6D-3D1A2B502C9C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +20,21 @@ Global
 		{265FD9AB-7BC0-4EA8-8831-24911599D92C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{265FD9AB-7BC0-4EA8-8831-24911599D92C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{265FD9AB-7BC0-4EA8-8831-24911599D92C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C1E881C-02AB-463B-8152-24DAB69BD8B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C1E881C-02AB-463B-8152-24DAB69BD8B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C1E881C-02AB-463B-8152-24DAB69BD8B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C1E881C-02AB-463B-8152-24DAB69BD8B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2AB094C3-A16A-4C7B-BAB0-B6CC08C0A2DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AB094C3-A16A-4C7B-BAB0-B6CC08C0A2DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AB094C3-A16A-4C7B-BAB0-B6CC08C0A2DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AB094C3-A16A-4C7B-BAB0-B6CC08C0A2DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D16028E-54A5-4A5B-9991-CDAD457E07C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D16028E-54A5-4A5B-9991-CDAD457E07C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D16028E-54A5-4A5B-9991-CDAD457E07C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D16028E-54A5-4A5B-9991-CDAD457E07C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA0645DB-6DFB-45A4-BD6D-3D1A2B502C9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA0645DB-6DFB-45A4-BD6D-3D1A2B502C9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA0645DB-6DFB-45A4-BD6D-3D1A2B502C9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA0645DB-6DFB-45A4-BD6D-3D1A2B502C9C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
