@@ -6,7 +6,7 @@ namespace Jourlity.App;
 
 class Program : MauiApplication
 {
-    protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
+    protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp().GetAwaiter().GetResult();
 
     static void Main(string[] args)
     {

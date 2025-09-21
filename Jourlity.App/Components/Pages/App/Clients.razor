@@ -1,0 +1,116 @@
+﻿@using Jourlity.App.Components.Layout
+@layout AppLayout
+@page "/app/clients"
+@using Jourlity.Data.Models
+@using Jourlity.Data.Repository
+@inject IRepository<Client> ClientRepository
+@inject NavigationManager NavigationManager
+
+<h3>Manage Clients</h3>
+
+<EditForm Model="@_client" OnValidSubmit="SaveClient">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="name">Name</label>
+        <InputText id="name" class="form-control" @bind-Value="_client!.Name" />
+    </div>
+
+    <div class="form-group">
+        <label for="email">Email</label>
+        <InputText id="email" class="form-control" @bind-Value="_client!.Email" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">@(_client.ClientId == Guid.Empty ? "Add Client" : "Update Client")</button>
+    @if (_client.ClientId != Guid.Empty)
+    {
+        <button type="button" class="btn btn-secondary" @onclick="CancelEdit">Cancel</button>
+    }
+</EditForm>
+
+<hr />
+
+@if (_clients == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var c in _clients)
+            {
+                <tr>
+                    <td>@c.Name</td>
+                    <td>@c.Email</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary" @onclick="() => EditClient(c)">Edit</button>
+                        <button class="btn btn-sm btn-danger" @onclick="() => DeleteClient(c.ClientId)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Client>? _clients = [];
+    private Client? _client = new Client();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadClients();
+    }
+
+    private async Task LoadClients()
+    {
+        var clientList = await ClientRepository.GetAll();
+        _clients = clientList.ToList();
+        StateHasChanged();
+    }
+
+    private async Task SaveClient()
+    {
+        if (_client?.ClientId == Guid.Empty)
+        {
+            _client.ClientId = Guid.NewGuid();
+            await ClientRepository.Add(_client);
+        }
+        else
+        {
+            if (_client != null) 
+                await ClientRepository.Update(_client);
+        }
+        _client = new Client();
+        await LoadClients();
+    }
+
+    private void EditClient(Client clientToEdit)
+    {
+        _client = clientToEdit;
+    }
+
+    private void CancelEdit()
+    {
+        _client = new Client();
+    }
+
+    private async Task DeleteClient(Guid id)
+    {
+        var clientToDelete = await ClientRepository.GetById(id);
+
+        if (clientToDelete == null)
+            return;
+        
+        await ClientRepository.Delete(clientToDelete);
+        await LoadClients();
+    }
+}

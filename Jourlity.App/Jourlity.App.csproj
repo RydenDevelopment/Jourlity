@@ -55,15 +55,65 @@
 
         <!-- Custom Fonts -->
         <MauiFont Include="Resources\Fonts\*"/>
+        <MauiAsset Include="obj\Debug\net9.0-android\compressed\m6yyo8cxkr-6gzpyzhau4.gz">
+          <Link>wwwroot\lib\bootstrap\m6yyo8cxkr-6gzpyzhau4.gz</Link>
+        </MauiAsset>
+        <MauiAsset Include="obj\Debug\net9.0-android\compressed\publish\m6yyo8cxkr-6gzpyzhau4.br">
+          <Link>wwwroot\lib\bootstrap\m6yyo8cxkr-6gzpyzhau4.br</Link>
+        </MauiAsset>
+        <MauiAsset Include="obj\Debug\net9.0-android\compressed\publish\za1ivo06za-8inm30yfxf.br">
+          <Link>wwwroot\lib\bootstrap\za1ivo06za-8inm30yfxf.br</Link>
+        </MauiAsset>
+        <MauiAsset Include="obj\Debug\net9.0-android\compressed\za1ivo06za-8inm30yfxf.gz">
+          <Link>wwwroot\lib\bootstrap\za1ivo06za-8inm30yfxf.gz</Link>
+        </MauiAsset>
+        <MauiAsset Include="obj\Debug\net9.0-windows10.0.19041.0\win10-x64\compressed\m6yyo8cxkr-6gzpyzhau4.gz">
+          <Link>wwwroot\lib\bootstrap\m6yyo8cxkr-6gzpyzhau4.gz</Link>
+        </MauiAsset>
+        <MauiAsset Include="obj\Debug\net9.0-windows10.0.19041.0\win10-x64\compressed\publish\m6yyo8cxkr-6gzpyzhau4.br">
+          <Link>wwwroot\lib\bootstrap\m6yyo8cxkr-6gzpyzhau4.br</Link>
+        </MauiAsset>
+        <MauiAsset Include="obj\Debug\net9.0-windows10.0.19041.0\win10-x64\compressed\publish\za1ivo06za-8inm30yfxf.br">
+          <Link>wwwroot\lib\bootstrap\za1ivo06za-8inm30yfxf.br</Link>
+        </MauiAsset>
+        <MauiAsset Include="obj\Debug\net9.0-windows10.0.19041.0\win10-x64\compressed\za1ivo06za-8inm30yfxf.gz">
+          <Link>wwwroot\lib\bootstrap\za1ivo06za-8inm30yfxf.gz</Link>
+        </MauiAsset>
 
         <!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
         <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)"/>
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.9" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.9" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.9">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.9" />
         <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)"/>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="$(MauiVersion)"/>
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Data\jourlity.db3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Jourlity.Data\Jourlity.Data.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Services\" />
+      <Folder Include="wwwroot\js\" />
+      <Folder Include="wwwroot\lib\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AndroidAsset Include="wwwroot\lib\bootstrap\bootstrap.min.css" />
+      <AndroidAsset Include="wwwroot\lib\bootstrap\bootstrap.min.css.map" />
     </ItemGroup>
 
 </Project>

@@ -1,5 +1,47 @@
-﻿@page "/"
+﻿@using Jourlity.App.Components.Layout
+@using Jourlity.App.Models
+@page "/"
+@layout SignInLayout
 
-<h1>Hello, world!</h1>
+<div class="home-container">
+    <div class="signin-content">
+        <h1 class="app-title">Sign In</h1>
+        <p class="app-subtitle">Welcome back to Jourlity</p>
+        
+        <EditForm Model="@signInModel" OnValidSubmit="HandleSignIn" class="signin-form">
+            <DataAnnotationsValidator />
+            
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <InputText id="email" class="form-control" @bind-Value="signInModel.Email" />
+                <ValidationMessage For="() => signInModel.Email" />
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <InputText id="password" type="password" class="form-control" @bind-Value="signInModel.Password" />
+                <ValidationMessage For="() => signInModel.Password" />
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+        </EditForm>
+        
+        <div class="signup-prompt">
+            <p>Don't have an account? <a href="/signup">Create one now</a></p>
+        </div>
+        
+        <div class="signup-prompt">
+            <p>Skip sign in procedure: <a href="/app">Log in now</a></p>
+        </div>
+    </div>
+</div>
 
-Welcome to your new app.
+@code {
+    private SignInModel signInModel = new SignInModel();
+
+    private void HandleSignIn() {
+        // Handle the sign-in logic here
+        Console.WriteLine($"Attempting to sign in with Email: {signInModel.Email}");
+        // In a real app, you would validate credentials, manage user session, etc.
+    }
+}

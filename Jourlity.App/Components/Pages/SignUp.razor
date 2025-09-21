@@ -1,0 +1,62 @@
+﻿@using Jourlity.App.Components.Layout
+@using Jourlity.App.Models
+@layout SignInLayout
+@page "/signup"
+
+<div class="signup-container">
+    <div class="signup-content">
+        <h1 class="app-title">Create Account</h1>
+        <p class="app-subtitle">Start your journey with Jourlity</p>
+        
+        <EditForm Model="@signUpModel" OnValidSubmit="HandleSignUp" class="signup-form">
+            <DataAnnotationsValidator />
+            
+            <div class="form-row">
+                <div class="form-group col">
+                    <label for="name">First Name</label>
+                    <InputText id="name" class="form-control" @bind-Value="signUpModel.FirstName" />
+                    <ValidationMessage For="() => signUpModel.FirstName" />
+                </div>
+                <div class="form-group col">
+                    <label for="lastname">Last Name</label>
+                    <InputText id="lastname" class="form-control" @bind-Value="signUpModel.LastName" />
+                    <ValidationMessage For="() => signUpModel.LastName" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <InputText id="email" class="form-control" @bind-Value="signUpModel.Email" />
+                <ValidationMessage For="() => signUpModel.Email" />
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <InputText id="password" type="password" class="form-control" @bind-Value="signUpModel.Password" />
+                <ValidationMessage For="() => signUpModel.Password" />
+            </div>
+
+            <div class="form-group">
+                <label for="confirm-password">Confirm Password</label>
+                <InputText id="confirm-password" type="password" class="form-control" @bind-Value="signUpModel.ConfirmPassword" />
+                <ValidationMessage For="() => signUpModel.ConfirmPassword" />
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+        </EditForm>
+        
+        <div class="signin-prompt">
+            <p>Already have an account? <a href="/">Sign in</a></p>
+        </div>
+    </div>
+</div>
+
+@code {
+    private SignUpModel signUpModel = new SignUpModel();
+
+    private void HandleSignUp() {
+        // Handle the sign-up logic here
+        Console.WriteLine($"Attempting to create account for: {signUpModel.Email}");
+        // In a real app, you would create the user, hash the password, etc.
+    }
+}
