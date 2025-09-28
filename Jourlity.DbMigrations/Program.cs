@@ -1,5 +1,5 @@
 ﻿using Jourlity.Data.Context;
-using Jourlity.Data.Models;
+using Jourlity.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Jourlity.DbMigrations;
