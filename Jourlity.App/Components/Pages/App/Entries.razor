@@ -1,0 +1,137 @@
+﻿@using Jourlity.App.Components.Layout
+@using Jourlity.Data.Context
+@layout AppLayout
+@page "/app/entries/{Id:guid}"
+@using Jourlity.Data.Entities
+@using Jourlity.Data.Repository
+@inject IRepository<Client> ClientRepository
+@inject NavigationManager Nav
+
+<h3>Manage Entries</h3>
+
+<EditForm Model="@_entry" OnValidSubmit="SaveEntry">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="name">Name</label>
+        <InputSelect id="name" class="form-control" @bind-Value="_entry!.EntryType">
+            <option value="">
+                Select classification ...
+            </option>
+            <option checked="@(_entry!.EntryType == EntryTypeEnum.Text)" 
+                    value="0">
+                Text
+            </option>
+            <option checked="@(_entry!.EntryType == EntryTypeEnum.Image)" 
+                    value="1">
+                Image
+            </option>
+            <option checked="@(_entry!.EntryType == EntryTypeEnum.Document)" 
+                    value="2">
+                Document
+            </option>
+        </InputSelect>
+    </div>
+
+    <button type="submit" class="btn btn-primary">@(_entry.Id == Guid.Empty ? "Add Entry" : "Update Entry")</button>
+    @if (_entry.Id != Guid.Empty)
+    {
+        <button type="button" class="btn btn-secondary" @onclick="CancelEdit">Cancel</button>
+    }
+</EditForm>
+
+<hr />
+
+@if (_entries == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Entry Type</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var c in _entries)
+            {
+                <tr>
+                    <td>@c.EntryType.ToString()</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary" @onclick="() => EditEntry(c)">Edit</button>
+                        <button class="btn btn-sm btn-danger" @onclick="() => DeleteEntry(c.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    [Parameter] 
+    public Guid Id { get; set; } = Guid.Empty;
+    
+    private List<Entry>? _entries = [];
+    private Entry? _entry = new ();
+    private Repository<Entry, CaseContext> EntryRepository { get; set; } = null!;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        if (Id == Guid.Empty)
+            return;
+        
+        var client = await ClientRepository.GetById(Id);
+        
+        var caseContext = new CaseContext(client.DbPath);
+        EntryRepository = new Repository<Entry, CaseContext>(caseContext);
+        await LoadEntries();
+    }
+
+    private async Task LoadEntries()
+    {
+        var entryList = await EntryRepository.GetAll();
+        _entries = entryList.ToList();
+        StateHasChanged();
+    }
+
+    private async Task SaveEntry()
+    {
+        if (_entry?.Id == Guid.Empty)
+        {
+            _entry.Id = Guid.NewGuid();
+            await EntryRepository.Add(_entry);
+        }
+        else
+        {
+            if (_entry != null) 
+                await EntryRepository.Update(_entry);
+        }
+        _entry = new Entry();
+        await LoadEntries();
+    }
+
+    private void EditEntry(Entry entryToEdit)
+    {
+        _entry = entryToEdit;
+    }
+
+    private void CancelEdit()
+    {
+        _entry = new Entry();
+    }
+
+    private async Task DeleteEntry(Guid id)
+    {
+        var entryToDelete = await EntryRepository.GetById(id);
+
+        if (entryToDelete == null)
+            return;
+        
+        await EntryRepository.Delete(entryToDelete);
+        await LoadEntries();
+    }
+}
