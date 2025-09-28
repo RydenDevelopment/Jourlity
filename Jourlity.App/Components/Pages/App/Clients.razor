@@ -1,10 +1,9 @@
 ﻿@using Jourlity.App.Components.Layout
 @layout AppLayout
 @page "/app/clients"
-@using Jourlity.Data.Models
+@using Jourlity.Data.Entities
 @using Jourlity.Data.Repository
 @inject IRepository<Client> ClientRepository
-@inject NavigationManager NavigationManager
 
 <h3>Manage Clients</h3>
 
@@ -22,8 +21,8 @@
         <InputText id="email" class="form-control" @bind-Value="_client!.Email" />
     </div>
 
-    <button type="submit" class="btn btn-primary">@(_client.ClientId == Guid.Empty ? "Add Client" : "Update Client")</button>
-    @if (_client.ClientId != Guid.Empty)
+    <button type="submit" class="btn btn-primary">@(_client.Id == Guid.Empty ? "Add Client" : "Update Client")</button>
+    @if (_client.Id != Guid.Empty)
     {
         <button type="button" class="btn btn-secondary" @onclick="CancelEdit">Cancel</button>
     }
@@ -49,11 +48,11 @@ else
             @foreach (var c in _clients)
             {
                 <tr>
-                    <td>@c.Name</td>
+                    <td><a href="app/entries/@c.Id">@c.Name</a></td>
                     <td>@c.Email</td>
                     <td>
                         <button class="btn btn-sm btn-primary" @onclick="() => EditClient(c)">Edit</button>
-                        <button class="btn btn-sm btn-danger" @onclick="() => DeleteClient(c.ClientId)">Delete</button>
+                        <button class="btn btn-sm btn-danger" @onclick="() => DeleteClient(c.Id)">Delete</button>
                     </td>
                 </tr>
             }
@@ -79,9 +78,9 @@ else
 
     private async Task SaveClient()
     {
-        if (_client?.ClientId == Guid.Empty)
+        if (_client?.Id == Guid.Empty)
         {
-            _client.ClientId = Guid.NewGuid();
+            _client.Id = Guid.NewGuid();
             await ClientRepository.Add(_client);
         }
         else
