@@ -3,36 +3,37 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Jourlity.Data.Repository
 {
-    public class Repository<T> : IRepository<T> where T : class
+    public class Repository<TEntity, TContext> : IRepository<TEntity> where TEntity : class where TContext : DbContext
     {
-        private readonly JourlityContext _context;
-        private readonly DbSet<T> _dbSet;
+        private readonly TContext _context;
+        private readonly DbSet<TEntity> _dbSet;
 
-        public Repository(JourlityContext context)
+        public Repository(TContext context)
         {
             _context = context;
-            _dbSet = context.Set<T>();
+            _context.Database.Migrate();
+            _dbSet = context.Set<TEntity>();
         }
 
-        public async Task<IEnumerable<T>> GetAll() => await _dbSet.ToListAsync();
+        public async Task<IEnumerable<TEntity>> GetAll() => await _dbSet.ToListAsync();
 
-        public async Task<T> GetById(Guid id) => 
-            await _dbSet.FindAsync(id);
+        public async Task<TEntity> GetById(Guid id) => 
+            await _dbSet.FindAsync(id) ?? throw new KeyNotFoundException();
 
-        public async Task Add(T entity)
+        public async Task Add(TEntity entity)
         {
             await _dbSet.AddAsync(entity);
             await _context.SaveChangesAsync();
         }
 
-        public async Task Update(T entity)
+        public async Task Update(TEntity entity)
         {
             _dbSet.Attach(entity);
             _context.Entry(entity).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
 
-        public async Task Delete(T entity)
+        public async Task Delete(TEntity entity)
         {
             _dbSet.Remove(entity);
             await _context.SaveChangesAsync();

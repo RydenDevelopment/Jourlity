@@ -1,11 +1,13 @@
-﻿namespace Jourlity.Data.Repository
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace Jourlity.Data.Repository
 {
-    public interface IRepository<T> where T : class
+    public interface IRepository<TEntity> where TEntity : class
     {
-        Task<IEnumerable<T>> GetAll();
-        Task<T> GetById(Guid id);
-        Task Add(T entity);
-        Task Update(T entity);
-        Task Delete(T entity);
+        Task<IEnumerable<TEntity>> GetAll();
+        Task<TEntity> GetById(Guid id);
+        Task Add(TEntity entity);
+        Task Update(TEntity entity);
+        Task Delete(TEntity entity);
     }
 }
