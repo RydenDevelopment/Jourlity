@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Jourlity.Data.Migrations
 {
     [DbContext(typeof(JourlityContext))]
-    [Migration("20250921153536_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250928104344_AddCasePath")]
+    partial class AddCasePath
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,10 +20,17 @@ namespace Jourlity.Data.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.9");
 
-            modelBuilder.Entity("Jourlity.Data.Models.Client", b =>
+            modelBuilder.Entity("Jourlity.Data.Entities.Client", b =>
                 {
-                    b.Property<Guid>("ClientId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DbPath")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
@@ -34,7 +41,10 @@ namespace Jourlity.Data.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("ClientId");
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
 
                     b.ToTable("Clients");
                 });
