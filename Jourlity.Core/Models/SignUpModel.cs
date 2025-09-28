@@ -1,4 +1,4 @@
-﻿namespace Jourlity.App.Models;
+﻿namespace Jourlity.Core.Models;
 using System.ComponentModel.DataAnnotations;
 
 public class SignUpModel
