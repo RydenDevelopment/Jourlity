@@ -7,31 +7,28 @@ using Jourlity.Data;
 
 /// <summary>
 /// Use the following command at the solution level in command prompt:
-/// dotnet ef migrations add InitialCreate --startup-project Jourlity.DbMigrations --project Jourlity.Data
+/// dotnet ef migrations add [migration name] --startup-project Jourlity.DbMigrations --project Jourlity.Data --JourlityContext
+/// dotnet ef migrations add [migration name] --startup-project Jourlity.DbMigrations --project Jourlity.Data --CaseContext
 /// </summary>
 class Program
 {
     static void Main(string[] args)
     {
-        var dbPath = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "jourlity.db"));
-        
-        var options = new DbContextOptionsBuilder<JourlityContext>()
-            .UseSqlite($"Data Source={dbPath}")
-            .Options;
+        using var context = new JourlityContext();
 
-        using (var context = new JourlityContext(options))
+        if (context.Database.EnsureCreated())
         {
-            context.Database.EnsureCreated();
-            CreateTable(context);
-            InsertUsers(context);
-            DisplayAllUsers(context);
-            DeleteUserByName(context, "Otto");
-            DisplayAllUsers(context);
+            context.Database.Migrate();
         }
-
-        File.Delete(dbPath);
-        Console.WriteLine("Database file deleted!");
+        
+        CreateTable(context);
+        InsertUsers(context);
+        CreateCaseDb(context);
+        DisplayAllUsers(context);
+        //DeleteUserByName(context, "Otto");
     }
+
+    
 
     private static void DeleteUserByName(JourlityContext context, string name)
     {
@@ -50,7 +47,7 @@ class Program
         Console.WriteLine("Current users in the database:");
         foreach (var client in clients)
         {
-            Console.WriteLine($"ID: {client.ClientId}, Name: {client.Name}, Email {client.Email}");
+            Console.WriteLine($"ID: {client.Id}, Name: {client.Name}, Email {client.Email}");
         }
     }
 
@@ -58,15 +55,26 @@ class Program
     {
         var clients = new[]
         {
-            new Client { ClientId = Guid.Empty, Name = "Otto", Email = "Otto@test.se"},
-            new Client { ClientId = Guid.Empty, Name = "Tim", Email = "Tim@test.se" },
-            new Client { ClientId = Guid.Empty, Name = "Steve", Email = "Steve@test.se"},
-            new Client { ClientId = Guid.Empty, Name = "Robert", Email = "Robert@test.se"}
+            new Client { Id = Guid.Empty, Name = "Kim", Email = "kim@ryden.dev", DbPath = "Kim", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now },
+            new Client { Id = Guid.Empty, Name = "Otto", Email = "Otto@test.se", DbPath = "Otto", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now },
+            new Client { Id = Guid.Empty, Name = "Tim", Email = "Tim@test.se", DbPath = "Tim", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now  },
+            new Client { Id = Guid.Empty, Name = "Steve", Email = "Steve@test.se", DbPath = "Steve", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now  },
+            new Client { Id = Guid.Empty, Name = "Robert", Email = "Robert@test.se", DbPath = "Robert", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now  }
         };
 
         context.Clients.AddRange(clients);
         context.SaveChanges();
         Console.WriteLine("Users inserted.");
+    }
+    
+    private static void CreateCaseDb(JourlityContext context)
+    {
+        var dbPaths = context.Clients.Select(x => x.DbPath).ToList();
+        foreach (var dbPath in dbPaths)
+        {
+            using var caseContext = new CaseContext(dbPath);
+            caseContext.Database.EnsureCreated();
+        }
     }
 
     private static void CreateTable(JourlityContext context)
