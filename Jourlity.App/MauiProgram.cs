@@ -1,8 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
 using Jourlity.Data.Context;
+using Jourlity.Data.Entities;
 using Jourlity.Data.Repository;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Entry = Jourlity.Data.Entities.Entry;
 
 namespace Jourlity.App;
 
@@ -21,15 +23,16 @@ public static class MauiProgram
 #endif
 
         SettingUpDatabase(builder);
-
         SettingUpServices(builder);
 
         var app = builder.Build();
-        
-        using var scope = app.Services.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<JourlityContext>();
-        dbContext.Database.MigrateAsync();
 
+        AppDomain.CurrentDomain.FirstChanceException += (s, e) =>
+        {
+            System.Diagnostics.Debug.WriteLine("********** OMG! FirstChanceException **********");
+            System.Diagnostics.Debug.WriteLine(e.Exception);
+        };
+        
         return app;
     }
 
@@ -37,25 +40,13 @@ public static class MauiProgram
     {
         builder.Services.AddMauiBlazorWebView();
         
-        builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+        builder.Services.AddScoped<IRepository<Client>, Repository<Client, JourlityContext>>();
+        builder.Services.AddScoped<IRepository<Entry>, Repository<Entry, CaseContext>>();
     }
 
     private static void SettingUpDatabase(MauiAppBuilder builder)
     {
-        var appDataDir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-        string appSpecificFolder = Path.Combine(appDataDir, "Jourlity");
-        
-        Directory.CreateDirectory(appSpecificFolder);
-        
-        var connectionString = new SqliteConnectionStringBuilder
-        {
-            DataSource = Path.Combine(Path.Combine(appSpecificFolder), "database.sqlite"),
-            Mode = SqliteOpenMode.ReadWriteCreate, 
-        }.ToString();
-        
-        builder.Services.AddDbContext<JourlityContext>(options =>
-        {
-            options.UseSqlite(connectionString);
-        });
+        builder.Services.AddDbContext<JourlityContext>();
+        builder.Services.AddDbContext<CaseContext>();
     }
 }

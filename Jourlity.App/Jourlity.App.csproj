@@ -102,11 +102,11 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Jourlity.Core\Jourlity.Core.csproj" />
       <ProjectReference Include="..\Jourlity.Data\Jourlity.Data.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Services\" />
       <Folder Include="wwwroot\js\" />
       <Folder Include="wwwroot\lib\" />
     </ItemGroup>
