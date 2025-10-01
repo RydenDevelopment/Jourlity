@@ -1,5 +1,4 @@
-﻿using Jourlity.Data.Context;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Jourlity.Data.Repository
 {
@@ -11,7 +10,11 @@ namespace Jourlity.Data.Repository
         public Repository(TContext context)
         {
             _context = context;
-            _context.Database.Migrate();
+
+            var migrations = context.Database.GetPendingMigrations();
+            if(migrations.Any())
+                context.Database.Migrate();
+            
             _dbSet = context.Set<TEntity>();
         }
 
