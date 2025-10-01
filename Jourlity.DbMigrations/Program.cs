@@ -7,8 +7,8 @@ using Jourlity.Data;
 
 /// <summary>
 /// Use the following command at the solution level in command prompt:
-/// dotnet ef migrations add [migration name] --startup-project Jourlity.DbMigrations --project Jourlity.Data --JourlityContext
-/// dotnet ef migrations add [migration name] --startup-project Jourlity.DbMigrations --project Jourlity.Data --CaseContext
+/// dotnet ef migrations add [migration name] --startup-project Jourlity.DbMigrations --project Jourlity.Data --context JourlityContext
+/// dotnet ef migrations add [migration name] --startup-project Jourlity.DbMigrations --project Jourlity.Data --context CaseContext
 /// </summary>
 class Program
 {
