@@ -1,0 +1,18 @@
+﻿@using Jourlity.Core.Services
+@inject IBackendCommunicator Comm
+
+<div id="blazor-error-ui">
+    An unhandled error has occurred. Please try and 
+    <a href="" class="reload">Reload</a>
+    <button class="btn btn-sm btn-primary" @onclick="SendError">Send a error report</button>
+    <a class="dismiss">🗙</a>
+</div>
+
+@code {
+    
+    private void SendError()
+    {
+        Comm.LoggErrorToBackend(new Exception("Test"), "Testing").GetAwaiter().GetResult();
+    }
+
+}

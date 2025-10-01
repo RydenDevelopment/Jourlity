@@ -4,68 +4,85 @@
 @using Jourlity.Data.Entities
 @using Jourlity.Data.Repository
 @inject IRepository<Client> ClientRepository
+@inject NavigationManager Nav
 
-<h3>Manage Clients</h3>
-
-<EditForm Model="@_client" OnValidSubmit="SaveClient">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-
-    <div class="form-group">
-        <label for="name">Name</label>
-        <InputText id="name" class="form-control" @bind-Value="_client!.Name" />
+<div class="page">
+    <div class="row">
+        <div class="page-title">
+            <h3>Manage Clients</h3>
+        </div>
+        <div @onclick="() => EditClient(new Client())" class="add-case">
+            <div class="bi bi-folder-plus"></div>
+        </div>
     </div>
 
-    <div class="form-group">
-        <label for="email">Email</label>
-        <InputText id="email" class="form-control" @bind-Value="_client!.Email" />
-    </div>
+    <hr/>
 
-    <button type="submit" class="btn btn-primary">@(_client.Id == Guid.Empty ? "Add Client" : "Update Client")</button>
-    @if (_client.Id != Guid.Empty)
+    @if (_clients == null || _clients.Count == 0)
     {
-        <button type="button" class="btn btn-secondary" @onclick="CancelEdit">Cancel</button>
+        <h2>Loading...</h2>
     }
-</EditForm>
-
-<hr />
-
-@if (_clients == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
+    else
+    {
+        <div class="row">
             @foreach (var c in _clients)
             {
-                <tr>
-                    <td><a href="app/entries/@c.Id">@c.Name</a></td>
-                    <td>@c.Email</td>
-                    <td>
-                        <button class="btn btn-sm btn-primary" @onclick="() => EditClient(c)">Edit</button>
-                        <button class="btn btn-sm btn-danger" @onclick="() => DeleteClient(c.Id)">Delete</button>
-                    </td>
-                </tr>
+                <div class="col-xss-12 col-xs-6 col-sm-6 col-md-4 col-lg-3 col-xl-2 p-2">
+                    <div class="case-card">
+                        <div @onclick="() => OpenCase(c.Id)">
+                            <h3>@c.Name</h3></div>
+                        <img @onclick="() => OpenCase(c.Id)" src="css/bootstrap-icons/folder.svg" alt="folder-icon"/>
+                        <div class="row">
+                            <div class="col-6">
+                                <button class="btn btn-primary" @onclick="() => EditClient(c)">Edit</button>
+                            </div>
+                            <div class="col-6">
+                                <button class="btn btn-danger" @onclick="() => DeleteClient(c.Id)">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             }
-        </tbody>
-    </table>
+        </div>
+    }
+</div>
+
+<hr/>
+
+@if (_isEditing)
+{
+    <div class="modal" @onclick="CancelEdit">
+        <div class="modal-content" @onclick:stopPropagation="true" @onclick:preventDefault="true">
+            <EditForm Model="@_client" OnValidSubmit="SaveClient">
+                <DataAnnotationsValidator/>
+                <ValidationSummary/>
+
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <InputText id="name" class="form-control" @bind-Value="_client!.Name"/>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <InputText id="email" class="form-control" @bind-Value="_client!.Email"/>
+                </div>
+
+                <button type="submit" class="btn btn-primary">@(_client.Id == Guid.Empty ? "Add Client" : "Update Client")</button>
+                <button type="button" class="btn btn-secondary" @onclick="CancelEdit">Cancel</button>
+            </EditForm>
+        </div>
+    </div>
 }
 
 @code {
     private List<Client>? _clients = [];
     private Client? _client = new Client();
 
+    private bool _isEditing = false;
+
     protected override async Task OnInitializedAsync()
     {
+        await Task.Delay(TimeSpan.FromSeconds(2));
         await LoadClients();
     }
 
@@ -76,30 +93,11 @@ else
         StateHasChanged();
     }
 
-    private async Task SaveClient()
-    {
-        if (_client?.Id == Guid.Empty)
-        {
-            _client.Id = Guid.NewGuid();
-            await ClientRepository.Add(_client);
-        }
-        else
-        {
-            if (_client != null) 
-                await ClientRepository.Update(_client);
-        }
-        _client = new Client();
-        await LoadClients();
-    }
-
     private void EditClient(Client clientToEdit)
     {
         _client = clientToEdit;
-    }
-
-    private void CancelEdit()
-    {
-        _client = new Client();
+        _isEditing = true;
+        StateHasChanged();
     }
 
     private async Task DeleteClient(Guid id)
@@ -108,8 +106,38 @@ else
 
         if (clientToDelete == null)
             return;
-        
+
         await ClientRepository.Delete(clientToDelete);
         await LoadClients();
+    }
+
+    private async Task SaveClient()
+    {
+        if (_client?.Id == Guid.Empty)
+        {
+            _client.Id = Guid.NewGuid();
+            _client.DbPath = _client.Id.ToString();
+            await ClientRepository.Add(_client);
+        }
+        else
+        {
+            if (_client != null)
+                await ClientRepository.Update(_client);
+        }
+
+        _client = new Client();
+        _isEditing = false;
+        StateHasChanged();
+    }
+
+    private void CancelEdit()
+    {
+        _isEditing = false;
+        _client = new Client();
+    }
+
+    private void OpenCase(Guid id)
+    {
+        Nav.NavigateTo("app/Entries/" + id);
     }
 }

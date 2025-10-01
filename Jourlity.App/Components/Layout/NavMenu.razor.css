@@ -3,6 +3,7 @@
     padding-left: 40px;
     padding-right: 40px;
     margin-bottom: 0 !important;
+    z-index: 9998;
 
     .nav-link {
         color: white;
@@ -29,15 +30,37 @@
     height: 50px;
 }
 
+.nav-profile {
+    width: auto;
+        
+    .row > .nav-name {
+        width: auto;
+        margin: 17px 0;
+        color: white;
+        font-weight: 900;
+        text-align: end;
+        cursor: pointer;
+    }
+    
+    .row > .nav-image {
+        font-size: xx-large;
+        color: white;
+        margin: 5px 20px 5px 5px;
+        width: 50px;
+        height:  50px;
+        cursor: pointer;
+    }
+}
+
 .navbar-nav {
     /* Flyttar menyalternativen till höger genom att lägga till auto-marginal till vänster */
+    text-align: end;
     float: right;
     margin-left: auto;
-    flex-grow: 0 !important;
 }
 
 .nav-item {
-    margin: 0 7px 0 0;
+    margin: 3px 25px 3px 0;
     font-size: 0.95rem;
     font-weight: bold;
 }
@@ -50,5 +73,17 @@
     border-bottom-left-radius: 1000%;
     border-bottom-right-radius: 1000%;
     z-index: -500;
+}
+
+.navbar-collapse {
+    flex-basis: 100%;
+    flex-grow: 1;
+    align-items: center;
+    position: fixed;
+    top: 68px;
+    right: 50px;
+    width: 200px;
+    background-image: linear-gradient(0deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    z-index: 9998;
 }
 

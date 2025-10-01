@@ -1,0 +1,70 @@
+﻿@using Jourlity.Data.Entities
+@using Jourlity.Data.Repository
+@inject IRepository<Client> ClientRepository
+
+@if (IsEditing)
+{
+    <div class="modal">
+        <EditForm Model="@Client" OnValidSubmit="SaveClient">
+            <DataAnnotationsValidator/>
+            <ValidationSummary/>
+
+            <div class="form-group">
+                <label for="name">Name</label>
+                <InputText id="name" class="form-control" @bind-Value="Client!.Name"/>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <InputText id="email" class="form-control" @bind-Value="Client!.Email"/>
+            </div>
+
+            <button type="submit" class="btn btn-primary">@(Client.Id == Guid.Empty ? "Add Client" : "Update Client")</button>
+            @if (Client.Id != Guid.Empty)
+            {
+                <button type="button" class="btn btn-secondary" @onclick="CancelEdit">Cancel</button>
+            }
+        </EditForm>
+    </div>
+}
+
+@code {
+    [Parameter] 
+    public bool IsEditing { get; set; }
+    
+    [Parameter] 
+    public Client? Client { get; set; }
+    
+    [Parameter]
+    public EventCallback<bool> OnClientChange {get; set;}
+
+    private async Task SaveClient()
+    {
+        if (Client?.Id == Guid.Empty)
+        {
+            Client.Id = Guid.NewGuid();
+            Client.DbPath = Client.Id.ToString();
+            await ClientRepository.Add(Client);
+        }
+        else
+        {
+            if (Client != null)
+                await ClientRepository.Update(Client);
+        }
+
+        Client = new Client();
+        IsEditing = false;
+        
+        if (OnClientChange.HasDelegate) 
+            await OnClientChange.InvokeAsync(true);
+    }
+    
+    private async Task CancelEdit()
+    {
+        IsEditing = false;
+        Client = new Client();
+        
+        if (OnClientChange.HasDelegate) 
+            await OnClientChange.InvokeAsync(true);
+    }
+}

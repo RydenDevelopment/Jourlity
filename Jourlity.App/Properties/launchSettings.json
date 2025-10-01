@@ -4,5 +4,6 @@
       "commandName": "Project",
       "nativeDebugging": false
     }
-  }
+  },
+  "BackendUrl":"http://localhost:5287/Api"
 }

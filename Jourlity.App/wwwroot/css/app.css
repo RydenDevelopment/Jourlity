@@ -1,4 +1,7 @@
-﻿/*#if (SampleContent)*/
+﻿@import "bootstrap-icons/bootstrap-icons.min.css";
+@import "bootstrap/bootstrap.min.css";
+
+/*#if (SampleContent)*/
 html, body {
     position: relative;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
