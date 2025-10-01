@@ -10,6 +10,11 @@ public class CaseContext : DbContext
 
     public DbSet<Entry> Entry { get; set; }
     
+    public CaseContext()
+    {
+        this._folderPath = "";
+    }
+    
     public CaseContext(string folderPath)
     {
         this._folderPath = folderPath;
