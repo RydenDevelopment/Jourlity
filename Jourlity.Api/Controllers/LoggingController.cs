@@ -16,9 +16,14 @@ public class LoggController : ControllerBase
     }
     
     [HttpPost]
-    public HttpMessage<object> Post(HttpMessage<Exception> content)
+    public HttpMessage<object> Post(ErrorReport report)
     {
-        _logger.LogCritical(content.Object, content.Object?.Message);
+        var exceptions = report.Exceptions
+            .Select(e => string.Join($"{Environment.NewLine}   at ", e.StackFrames.Prepend(e.Type)));
+
+        _logger.LogCritical("Client error report from {AppVersion} on {OperatingSystem} at {Timestamp}{NewLine}{Exceptions}",
+            report.AppVersion, report.OperatingSystem, report.Timestamp, Environment.NewLine,
+            string.Join($"{Environment.NewLine} ---> ", exceptions));
 
         return new HttpMessage<object>
         {

@@ -7,9 +7,28 @@
 
     <main>
         <article class="m-5">
-            @Body
+            <ErrorBoundary @ref="_errorBoundary">
+                <ChildContent>
+                    @Body
+                </ChildContent>
+                <ErrorContent Context="exception">
+                    <PageError Exception="exception"/>
+                </ErrorContent>
+            </ErrorBoundary>
         </article>
     </main>
 </div>
 
 <PageError />
+
+@code {
+
+    private ErrorBoundary? _errorBoundary;
+
+    // Clear the error when the user navigates to another page
+    protected override void OnParametersSet()
+    {
+        _errorBoundary?.Recover();
+    }
+
+}

@@ -22,6 +22,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Jourlity.Api\Jourlity.Api.csproj" />
+      <ProjectReference Include="..\Jourlity.Core\Jourlity.Core.csproj" />
       <ProjectReference Include="..\Jourlity.Data\Jourlity.Data.csproj" />
       <ProjectReference Include="..\Jourlity.DbMigrations\Jourlity.DbMigrations.csproj" />
       <ProjectReference Include="..\Jourlity.Dto\Jourlity.Dto.csproj" />

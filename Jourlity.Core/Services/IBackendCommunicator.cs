@@ -2,5 +2,9 @@
 
 public interface IBackendCommunicator
 {
-    public Task LoggErrorToBackend(Exception ex, string message);
+    /// <summary>
+    /// Sends a sanitized report of the exception to the backend. Only type names and method frames
+    /// leave the device, never the message, Data or file paths.
+    /// </summary>
+    public Task LoggErrorToBackend(Exception ex);
 }

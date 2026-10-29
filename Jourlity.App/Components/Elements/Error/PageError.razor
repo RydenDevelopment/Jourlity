@@ -1,18 +1,70 @@
 ﻿@using Jourlity.Core.Services
 @inject IBackendCommunicator Comm
 
-<div id="blazor-error-ui">
-    An unhandled error has occurred. Please try and 
-    <a href="" class="reload">Reload</a>
-    <button class="btn btn-sm btn-primary" @onclick="SendError">Send a error report</button>
-    <a class="dismiss">🗙</a>
-</div>
+@if (Exception == null)
+{
+    @* Fallback shown by the Blazor framework for errors outside an ErrorBoundary. The framework does not
+       expose the exception here, so there is nothing to report. *@
+    <div id="blazor-error-ui">
+        An unhandled error has occurred. Please try and
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+}
+else
+{
+    <div class="page-error">
+        An unhandled error has occurred. Please try and
+        <a href="" class="reload">Reload</a>
+        @if (_reportState == ReportState.Sent)
+        {
+            <span>Thank you, the error report has been sent.</span>
+        }
+        else
+        {
+            <button class="btn btn-sm btn-primary" @onclick="SendError" disabled="@(_reportState == ReportState.Sending)">
+                Send a error report
+            </button>
+            @if (_reportState == ReportState.Failed)
+            {
+                <span>The error report could not be sent. Please try again later.</span>
+            }
+        }
+    </div>
+}
 
 @code {
-    
+
+    /// <summary>The error caught by an ErrorBoundary. Only a sanitized report of it is sent.</summary>
+    [Parameter]
+    public Exception? Exception { get; set; }
+
+    private ReportState _reportState = ReportState.NotSent;
+
     private async Task SendError()
     {
-        await Comm.LoggErrorToBackend(new Exception("Test"), "Testing");
+        if (Exception == null)
+            return;
+
+        _reportState = ReportState.Sending;
+        try
+        {
+            await Comm.LoggErrorToBackend(Exception);
+            _reportState = ReportState.Sent;
+        }
+        catch (Exception e) when (e is HttpRequestException or TaskCanceledException)
+        {
+            // The app is offline-first, so the backend being unreachable is not an error
+            _reportState = ReportState.Failed;
+        }
+    }
+
+    private enum ReportState
+    {
+        NotSent,
+        Sending,
+        Sent,
+        Failed
     }
 
 }
