@@ -36,10 +36,44 @@ before convenience, speed of delivery and new features.
      options and ask.
 5. **Offline-first.** Every feature must work without a network connection. The only exceptions are
    sign-in, account checks, licence checks and subscription checks, and the app should fail
-   gracefully when those can't reach the server.
+   gracefully when those can't reach the server. Licence problems are handled by the read-only
+   mode described below, never by locking the user out of their data.
 6. **Logging and errors must be clean.** Exception messages, stack traces and log lines can carry
    client data, such as entity values or file paths containing names. Anything sent off the device
    must be stripped of that first. Local logs must not contain client data either.
+7. **Licence problems make the app read-only, never inaccessible.** The user's records belong to
+   them, and they may be legally required to keep and produce them. The licence state decides what
+   the app *allows*. It must never decide whether the data *can be opened*.
+
+## Licence states and read-only mode
+
+| State           | When                                                                        | Behaviour                                             |
+|-----------------|-----------------------------------------------------------------------------|-------------------------------------------------------|
+| **Active**      | The last successful validation is still within the grace period             | Full access                                           |
+| **Grace**       | The server can't be reached, but the grace period hasn't run out            | Full access, with a non-blocking notice               |
+| **Read-only**   | The grace period has run out without a successful validation, or the server says the licence is expired, cancelled or invalid | View, search, export and print only |
+
+- **Being offline is not a licence failure.** Losing the network starts or continues the grace
+  period. It doesn't switch the app to read-only straight away. The length of the grace period
+  hasn't been decided yet.
+- **Read-only means:** no creating, editing or deleting clients, cases or entries, and no schema
+  migrations. Viewing, searching, exporting and printing keep working, so the user can always get
+  their records out.
+- **Export needs the correct encryption credentials.** It works in every licence state, read-only
+  included, but only once the user has supplied the credentials that decrypt the case. A valid
+  licence never replaces them, and an invalid licence never blocks them.
+- **Enforce it in the app's service layer**, through one central licence-state service checked
+  before every write. Hiding buttons alone isn't enough. Don't scatter licence checks through the
+  UI.
+- **Decryption must not depend on the licence or the server.** Keys for local data come only from
+  the user's own credentials and local key storage, so read-only mode can always decrypt.
+- **Store the last validation result locally so it can't be tampered with unnoticed**, and keep it
+  metadata only: licence status, expiry and time of last check. A changed system clock must not
+  extend the grace period indefinitely.
+- **Read-only mode is a licensing measure, not a security boundary.** Confidentiality comes from
+  encryption, not from the licence state.
+- **Recover automatically.** As soon as validation succeeds again, the app returns to Active with no
+  data loss and no reinstall.
 
 ## Platform
 
@@ -54,6 +88,7 @@ before convenience, speed of delivery and new features.
 Ask before making any of these changes, even if the task seems to call for them:
 
 - choosing or changing encryption, key derivation, or how keys are stored
+- changing the licence states, the grace period, or what read-only mode allows
 - changing the database layout, or how case databases are created, located or opened
 - adding or changing anything sent to the backend, including new DTO fields or endpoints
 - adding a third-party package, analytics, telemetry or crash reporting

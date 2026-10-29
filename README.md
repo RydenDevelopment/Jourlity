@@ -19,6 +19,30 @@ These are hard requirements. Any change that conflicts with them is a bug.
    and nothing that identifies or describes a client.
 5. **Offline-first.** Everything works without a network connection. The only exceptions are
    account checks, licence checks and subscription checks.
+6. **Data is never held hostage.** If the licence can't be validated, the app switches to read-only
+   mode. The user can still open, search, export and print their records, but can't change them.
+   Licence problems never lock users out of their own data.
+
+## Licensing and read-only mode
+
+The app validates its licence against the backend and remembers the last successful result
+locally.
+
+| State         | When                                                                                     | What the user can do                  |
+|---------------|------------------------------------------------------------------------------------------|---------------------------------------|
+| **Active**    | The licence was validated within the grace period                                        | Everything                            |
+| **Grace**     | The server can't be reached, but the grace period hasn't run out                         | Everything, with a notice              |
+| **Read-only** | The grace period ran out without a successful validation, or the licence is expired, cancelled or invalid | View, search, export and print |
+
+- Working offline is normal. It only leads to read-only mode once the grace period runs out. The
+  length of the grace period hasn't been decided yet.
+- Decrypting local data never depends on the licence or the server, so the data always stays
+  readable.
+- Export works in read-only mode too, but only when the user provides the correct encryption
+  credentials for the data being exported.
+- When validation succeeds again, the app returns to Active automatically.
+- Read-only mode controls licensing. It is not a security feature: confidentiality is protected by
+  encryption.
 
 ## Architecture
 
@@ -61,7 +85,7 @@ The project is in early development. The principles above are not fully implemen
   must be encrypted as well.
 - Error reports sent to the backend include the full exception. These reports have to be cleaned
   first so that no client data can leak through messages or stack traces.
-- Authentication, licensing and subscription are not built yet.
+- Authentication, licensing, subscription and read-only mode are not built yet.
 
 ## Getting started
 
