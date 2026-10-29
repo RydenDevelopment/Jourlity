@@ -43,7 +43,7 @@ public static class MauiProgram
     {
         builder.Services.AddMauiBlazorWebView();
         
-        builder.Services.AddHttpClient("Backend", client =>
+        builder.Services.AddHttpClient<IBackendCommunicator, BackendCommunicator>(client =>
         {
             var backendUrl = Environment.GetEnvironmentVariable("BackendUrl");
             if (backendUrl == null)
@@ -55,8 +55,6 @@ public static class MauiProgram
         
         builder.Services.AddScoped<IRepository<Client>, Repository<Client, JourlityContext>>();
         builder.Services.AddScoped<IRepository<Entry>, Repository<Entry, CaseContext>>();
-
-        builder.Services.AddScoped<IBackendCommunicator, BackendCommunicator>();
     }
 
     private static void SettingUpDatabase(MauiAppBuilder builder)

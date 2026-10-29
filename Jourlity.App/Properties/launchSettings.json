@@ -2,8 +2,10 @@
   "profiles": {
     "Windows Machine": {
       "commandName": "Project",
-      "nativeDebugging": false
+      "nativeDebugging": false,
+      "environmentVariables": {
+        "BackendUrl": "http://localhost:5287/Api/"
+      }
     }
-  },
-  "BackendUrl":"http://localhost:5287/Api"
+  }
 }

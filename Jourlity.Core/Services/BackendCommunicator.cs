@@ -25,7 +25,8 @@ public class BackendCommunicator : IBackendCommunicator
         var json = JsonConvert.SerializeObject(package);
         var data = new StringContent(json, Encoding.UTF8, "application/json");
 
-        var result = await _client.PostAsync("/Logging", data);
-        string resultContent = await result.Content.ReadAsStringAsync();
+        // Relative path (no leading slash) so it resolves under the BaseAddress, e.g. .../Api/Logg
+        var result = await _client.PostAsync("Logg", data);
+        result.EnsureSuccessStatusCode();
     }
 }

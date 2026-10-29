@@ -10,9 +10,9 @@
 
 @code {
     
-    private void SendError()
+    private async Task SendError()
     {
-        Comm.LoggErrorToBackend(new Exception("Test"), "Testing").GetAwaiter().GetResult();
+        await Comm.LoggErrorToBackend(new Exception("Test"), "Testing");
     }
 
 }
