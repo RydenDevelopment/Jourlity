@@ -423,3 +423,9 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Local databases (may contain client data)
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+*.sqlite-journal
