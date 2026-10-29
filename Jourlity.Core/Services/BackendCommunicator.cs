@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using Jourlity.Dto;
 using Newtonsoft.Json;
 
 namespace Jourlity.Core.Services;
@@ -14,15 +13,12 @@ public class BackendCommunicator : IBackendCommunicator
         _client = client;
     }
 
-    public async Task LoggErrorToBackend(Exception ex, string message)
+    public async Task LoggErrorToBackend(Exception ex)
     {
-        var package = new HttpMessage<Exception>
-        {
-            Message = message,
-            Object = ex,
-        };
-        
-        var json = JsonConvert.SerializeObject(package);
+        // Never serialize the exception itself, it can carry client data. Send the sanitized report only.
+        var report = ErrorReportBuilder.Build(ex);
+
+        var json = JsonConvert.SerializeObject(report);
         var data = new StringContent(json, Encoding.UTF8, "application/json");
 
         // Relative path (no leading slash) so it resolves under the BaseAddress, e.g. .../Api/Logg
